@@ -1,0 +1,52 @@
+name:  CI/CD Pipeline For Ministry Of Housing Api
+run-name: Running  Ministry Of Housing Api CI/CD Pipeline
+on:
+  push:
+    branches: ["main"]
+
+jobs:
+
+  build:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v4
+    - name: Build the Docker image
+      run: docker-compose up -d
+      working-directory: ./
+      env:
+        PORT: 5000
+        JWT_SECRET: 'serct'
+        MONGO_DB_URI: 'mongodb://root:DzzpKlcbnsSLewlsMVakQ5@localhost:27017/admin'
+  
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Git pull latest code
+        uses: appleboy/ssh-action@master
+        with:
+          host: 195.200.14.33
+          username: root
+          password: l2%kzK9TFD9UAPeA3c@I
+          port: 22 
+          envs: PORT,JWT_SECRET,MONGO_DB_URI
+          script: |
+            set -e
+            if [ ! -d "/root/Ministry-of-housing" ]; then
+              echo "Repo does not exist, cloning..."
+              git clone git@github.com:Diraya-Inc/Ministry-of-housing.git /root/Ministry-of-housing
+            fi
+            cd /root/Ministry-of-housing
+            git pull origin main
+            
+            # Create or update .env file
+            cat > .env.dev << EOL
+            PORT=${PORT}
+            JWT_SECRET=${JWT_SECRET}
+            MONGO_DB_URI=${MONGO_DB_URI}
+            EOL
+            
+            docker compose down
+            docker compose up -d --build
+            echo "Deployment completed successfully"
