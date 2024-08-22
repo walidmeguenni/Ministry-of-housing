@@ -36,12 +36,15 @@ jobs:
           username: root
           password: l2%kzK9TFD9UAPeA3c@I
           port: 22 
-          envs: PORT,JWT_SECRET,MONGO_DB_URI
+          env:
+            PORT: 8000
+            JWT_SECRET: 'serct'
+            MONGO_DB_URI: 'mongodb://root:DzzpKlcbnsSLewlsMVakQ5@mongo_db:27017/admin'
           script: |
             set -e
             if [ ! -d "/root/Ministry-of-housing" ]; then
               echo "Repo does not exist, cloning..."
-              git clone git@github.com:Diraya-Inc/Ministry-of-housing.git /root/Ministry-of-housing
+              git clone git@github.com:walidmeguenni/Ministry-of-housing.git /root/Ministry-of-housing
             fi
             cd /root/Ministry-of-housing
             git pull origin main
@@ -52,7 +55,6 @@ jobs:
             JWT_SECRET=${JWT_SECRET}
             MONGO_DB_URI=${MONGO_DB_URI}
             EOL
-            
             docker compose down
             docker compose up -d --build
             echo "Deployment completed successfully"
