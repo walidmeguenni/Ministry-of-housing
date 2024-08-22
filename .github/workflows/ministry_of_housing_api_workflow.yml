@@ -40,6 +40,7 @@ jobs:
           username: root
           password: l2%kzK9TFD9UAPeA3c@I
           port: 22 
+          envs: PORT,JWT_SECRET,MONGO_DB_URI
           script: |
             set -e
             if [ ! -d "/root/Ministry-of-housing" ]; then
@@ -51,9 +52,9 @@ jobs:
             
             # Create or update .env file
             cat > .env.dev << EOL
-            PORT=${PORT}
-            JWT_SECRET=${JWT_SECRET}
-            MONGO_DB_URI=${MONGO_DB_URI}
+            PORT=$PORT
+            JWT_SECRET=$JWT_SECRET
+            MONGO_DB_URI=$MONGO_DB_URI
             EOL
             docker compose down
             docker compose up -d --build
