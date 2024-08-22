@@ -12,11 +12,18 @@ jobs:
     steps:
     - uses: actions/checkout@v4
     - name: Build the Docker image
-      run: docker compose up -d
       env:
         PORT: 8000
         JWT_SECRET: 'serct'
         MONGO_DB_URI: 'mongodb://root:DzzpKlcbnsSLewlsMVakQ5@mongo_db:27017/admin'
+      run: |
+        cat > .env.dev << EOL
+          PORT=${PORT}
+          JWT_SECRET=${JWT_SECRET}
+          MONGO_DB_URI=${MONGO_DB_URI}  
+        EOL
+        docker compose up -d
+      working-directory: ./
   
   deploy:
     runs-on: ubuntu-latest
