@@ -31,15 +31,15 @@ jobs:
     steps:
       - name: Git pull latest code
         uses: appleboy/ssh-action@master
+        env:
+          PORT: 8000
+          JWT_SECRET: 'serct'
+          MONGO_DB_URI: 'mongodb://root:DzzpKlcbnsSLewlsMVakQ5@mongo_db:27017/admin'
         with:
           host: 195.200.14.33
           username: root
           password: l2%kzK9TFD9UAPeA3c@I
           port: 22 
-          env:
-            PORT: 8000
-            JWT_SECRET: 'serct'
-            MONGO_DB_URI: 'mongodb://root:DzzpKlcbnsSLewlsMVakQ5@mongo_db:27017/admin'
           script: |
             set -e
             if [ ! -d "/root/Ministry-of-housing" ]; then
